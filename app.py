@@ -1,21 +1,45 @@
+from pathlib import Path
 import streamlit as st
-import pandas as pd
-import numpy as np
 
-st.title('My first app')
+dir_path = Path(__file__).parent
 
-st.write("Here's our first attempt at using data to create a table:")
-#st.write(pd.DataFrame(pd.read_csv('Student Depression Dataset.csv')))
-st.write("Here's our first attempt at using data to create a table:")
+def run():
+    page = st.navigation(
+        [
+            #Overview
+            st.Page(
+                dir_path / "chapters/overview.py",
+                title="1. Overview",
+                icon=":material/overview_key:",
+            ),
+            #Data Exploration
+            st.Page(
+                dir_path / "chapters/data_exploration.py",
+                title="2. Data Exploration",
+                icon=":material/explore:",
+            ),
+            #Data Preprocessing
+            st.Page(
+                dir_path / "chapters/data_preprocessing.py",
+                title="3. Data Preprocessing",
+                icon=":material/room_preferences:",
+            ),
+            #Feature Engineering
+            st.Page(
+                dir_path / "chapters/feature_engineering.py",
+                title="4. Feature Engineering",
+                icon=":material/construction:",
+            ),
+            #Model Selections and Training
+            st.Page(
+                dir_path / "chapters/model_selections_and_training.py",
+                title="5. Model Selections and Training",
+                icon=":material/emoji_events:",
+            ),
 
-df = pd.read_csv('Student Depression Dataset.csv')
+        ]
+    )
+    page.run()
 
-st.write(df.head())
-
-st.write("Here's our first attempt at using data to create a table:")
-st.write(pd.DataFrame({
-    'first column': [1, 2, 3, 4],
-    'second column': [10, 20, 30, 40]
-}))
-
-st.write("Here's our first attempt at using data to create a table:")
+if __name__ == "__main__":
+    run()
