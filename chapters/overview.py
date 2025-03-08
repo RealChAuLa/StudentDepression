@@ -6,7 +6,7 @@ from matplotlib import pyplot as plt
 # Load Dataset (Replace with actual dataset path)
 @st.cache_data
 def load_data():
-    df = pd.read_csv("Student Depression Dataset.csv")  # Update with actual file path
+    df = pd.read_csv("./data/Student Depression Dataset.csv")  # Update with actual file path
     return df
 
 df = load_data()
