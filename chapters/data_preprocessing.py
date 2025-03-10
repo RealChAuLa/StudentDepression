@@ -21,6 +21,7 @@ df_cleaned = df.copy()
 for col in df_cleaned.select_dtypes(include=[np.number]):  
     df_cleaned[col].fillna(df_cleaned[col].median(), inplace=True)
 
+
 df_cleaned.dropna(inplace=True)
 
 st.subheader("✅ Missing Value Count (After Handling)")
