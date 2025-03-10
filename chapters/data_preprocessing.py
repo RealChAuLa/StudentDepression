@@ -30,4 +30,26 @@ missing_table_after = pd.DataFrame({"Column": missing_after.index, "Missing Valu
 st.write(missing_table_after[missing_table_after["Missing Values"] > 0] if missing_after.sum() > 0 else "No missing values left!")
 
 
+if 'Sleep Duration' in df_cleaned.columns:
+    st.subheader("🛏️ Sleep Duration Categories and Counts")
+    sleep_duration_counts = df_cleaned['Sleep Duration'].value_counts()
+    st.write(sleep_duration_counts)
+else:
+    st.write("The 'Sleep Duration' column does not exist in the dataset.")
+
+if 'Dietary Habits' in df_cleaned.columns:
+    st.subheader("🍽️ Dietary Habits Categories and Counts")
+    dietary_habits_counts = df_cleaned['Dietary Habits'].value_counts()
+    st.write(dietary_habits_counts)
+else:
+    st.write("The 'Dietary Habits' column does not exist in the dataset.")
+
+
+if 'Degree' in df_cleaned.columns:
+    st.subheader("🎓 Degree Categories and Row Counts")
+    degree_counts = df_cleaned['Degree'].value_counts()
+    st.write(degree_counts)
+else:
+    st.write("The 'Degree' column does not exist in the dataset.")
+
 
