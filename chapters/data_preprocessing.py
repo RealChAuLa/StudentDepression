@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+import altair as alt
 
 def load_data():
     file_path = "data/Student_Depression_Dataset.csv"
@@ -18,6 +19,11 @@ st.write(
 )
 
 df = load_data()
+
+
+
+
+####################################### HANDLING MISSING VALUE #####################
 
 st.subheader("Missing Data Analysis")
 missing_before = df.isnull().sum()
@@ -39,10 +45,57 @@ st.write("All missing values have been handled. Below is the final count of miss
 # Check and display missing values after processing
 missing_after = df_cleaned.isnull().sum().sum()
 
-if missing_after > 0:
-    st.markdown(f'<p style="color:red; font-weight:bold;">Total missing values remaining: {missing_after}</p>', unsafe_allow_html=True)
-else:
-    st.markdown('<p style="color:green; font-weight:bold;">No missing values left in the dataset</p>', unsafe_allow_html=True)
+# if missing_after > 0:
+#     st.markdown(f'<p style="color:red; font-weight:bold;">Total missing values remaining: {missing_after}</p>', unsafe_allow_html=True)
+# else:
+#     st.markdown('<p style="color:green; font-weight:bold;">No missing values left in the dataset</p>', unsafe_allow_html=True)
+
+st.write("Missing value count:", missing_after)
+
+
+
+
+
+
+####################################### HANDLING UNWANTED COLUMNS #####################
+
+
+
+st.subheader("Age Distribution")
+
+# Sample dataframe (use your actual df_cleaned)
+age_counts = df_cleaned['Age'].value_counts().sort_index()
+age_distribution = pd.DataFrame({
+    'Age': age_counts.index,
+    'Count': age_counts.values
+})
+
+# Show the full age distribution without filtering
+chart = alt.Chart(age_distribution).mark_bar(color='#00A9AC').encode(
+    x='Age:O',
+    y='Count:Q'
+).properties(
+    width=600,
+    height=400
+)
+
+# Display the chart
+st.altair_chart(chart)
+
+st.markdown(
+    "As you can see in the age column, there are very few data points for ages 35 and above. These ages have to remove from the dataset to ensure that the analysis focuses on more common age groups."
+)
+
+# Now remove ages 35 and above from the dataset
+df_cleaned = df_cleaned[df_cleaned['Age'] < 35]
+
+# st.markdown('<p style="color:green; font-weight:bold;">Samples with Age 35 and above 35 have been removed.</p>', unsafe_allow_html=True)
+
+st.write("Max Age in Dataset:", df_cleaned['Age'].max())
+
+
+
+
 
 
 # # Count occurrences of each age
