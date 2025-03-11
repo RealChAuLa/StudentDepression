@@ -45,7 +45,7 @@ st.markdown(
     "- **ID**: Unique identifier for each student.\n"
     "- **Age**: Age of the student.\n"
     "- **Gender**: Student's gender (Male/Female).\n"
-    "- **City**: Geographic location of the student.\n
+    "- **City**: Geographic location of the student.\n"
     "- **CGPA**: Academic performance indicator (Grade Point Average).\n"
     "- **Sleep Duration**: Average daily sleep duration in hours.\n"
     "- **Academic Pressure**: Scale (0-5) indicating academic workload stress.\n"
