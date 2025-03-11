@@ -54,6 +54,20 @@ st.write("Missing value count:", missing_after)
 
 
 
+####################################### HANDLING DUPLICATE ROWS #####################
+
+#check duplicate rows 
+
+st.subheader("Duplicate Rows Analysis")
+duplicate_rows = df_cleaned.duplicated().sum()
+st.write("Missing value count:", duplicate_rows)
+if duplicate_rows > 0:
+    st.write("Duplicate rows have been removed.")
+    df_cleaned.drop_duplicates(inplace=True)
+else:
+    st.write("No duplicate rows found in the dataset.")
+
+
 
 
 
@@ -86,7 +100,6 @@ st.markdown(
 df_cleaned = df_cleaned[df_cleaned['Age'] < 35]
 
 st.write("Max Age in Dataset:", df_cleaned['Age'].max())
-
 
 
 
