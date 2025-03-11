@@ -4,6 +4,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import altair as alt
+import plotly.express as px
+
 
 def load_data():
     file_path = "data/Student_Depression_Dataset.csv"
@@ -67,9 +69,6 @@ else:
     st.write("No duplicate rows found in the dataset.")
 
 
-
-
-
 ####################################### HANDLING UNWANTED COLUMNS #####################
 st.subheader("Age Data Refinement")
 
@@ -102,7 +101,128 @@ st.write("Max Age in Dataset:", df_cleaned['Age'].max())
 
 
 
-#########################hanling categorical data##############################
+
+# ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+st.subheader("Sleep Duration Refinement")
+
+st.write("""
+This section provides an overview of the user's sleep hours. The sleep durations are categorized into the following groups:
+""")
+
+sleep_counts = df_cleaned['Sleep Duration'].value_counts().reset_index()
+sleep_counts.columns = ['Sleep Duration', 'Count']
+
+# Sort by sleep duration (assuming it's numeric)
+sleep_counts = sleep_counts.sort_values('Sleep Duration')
+
+fig = px.bar(
+    sleep_counts,
+    x='Sleep Duration',
+    y='Count',
+    labels={'Sleep Duration': 'Hours of Sleep', 'Count': 'Number of Records'},
+    text='Count',  # Display count on bars
+    color='Sleep Duration',  # You can still keep color if needed
+)
+
+# Customize the chart
+fig.update_traces(
+    textposition='outside',
+    texttemplate='%{text}',
+    marker_line_width=1,
+    marker_line_color='white',
+    marker_color='#6ded66' #6ded66 # Apply the light green color to the bars
+)
+
+fig.update_layout(
+    xaxis_title='Sleep Duration (hours)',
+    yaxis_title='Count',
+    coloraxis_showscale=False  # Hide the color scale
+)
+
+# Display the chart in Streamlit
+st.plotly_chart(fig, use_container_width=True)
+
+# Create a two-column layout
+col1, col2 = st.columns(2)
+
+# New paragraph about the "Others" category
+st.write("""
+It is worth noting that the "Others" category contains only a small amount of data. To maintain the focus on the primary sleep duration categories, the "Others" data will be excluded from the analysis.
+""")
+
+# Filter out the "Others" category
+df_cleaned = df_cleaned[df_cleaned['Sleep Duration'] != 'Others']
+
+# Display the updated count of  others category
+others_count = df_cleaned[df_cleaned['Sleep Duration'] == 'Others'].shape[0]
+
+st.write("Count of 'Others' category:", others_count)
+
+
+
+# ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+st.subheader("Profession Refinement")
+profession_counts = df_cleaned['Profession'].value_counts().reset_index()
+profession_counts.columns = ['Profession', 'Count']
+
+# Sort by profession (if needed, assuming it's a categorical column)
+profession_counts = profession_counts.sort_values('Profession')
+
+fig = px.bar(
+    profession_counts,
+    x='Profession',
+    y='Count',
+    labels={'Profession': 'Profession', 'Count': 'Number of Records'},
+    text='Count',  # Display count on bars
+    color='Profession',  # Color by profession
+)
+
+# Customize the chart
+fig.update_traces(
+    textposition='outside',
+    texttemplate='%{text}',
+    marker_line_width=1,
+    marker_line_color='white',
+    marker_color='#b7ebb5'  # Apply the light green color to the bars
+)
+
+fig.update_layout(
+    xaxis_title='Profession',
+    yaxis_title='Count',
+    coloraxis_showscale=False  # Hide the color scale
+)
+
+# Display the chart in Streamlit
+st.plotly_chart(fig, use_container_width=True)
+
+# Create a two-column layout
+col1, col2 = st.columns(2)
+
+st.write("""
+In this analysis, only the "Student" profession will be considered, as the other professions contain only a small amount of data. Removing these less-represented professions helps focus the analysis on the more significant data points and ensures a clearer understanding of the distribution of the "Student" profession.
+""")
+
+#filter student profession
+df_cleaned = df_cleaned[df_cleaned['Profession'] == 'Student']
+
+st.write("Profession count after filtering:", df_cleaned['Profession'].value_counts().values[0])
+
+
+
+
+
+
+
+
+
+#########################hanling categorical data############################################################################
+
+
 
 
 # # Count occurrences of each age
@@ -127,8 +247,7 @@ st.write("Max Age in Dataset:", df_cleaned['Age'].max())
 # st.write("Samples with Age ≥ 35 have been removed.")
 
 
-
-
+# ???????????????????????????????????????????????????????????????????????????????///////////////////////
 
 st.subheader("Sleep Duration Encoding")
 
