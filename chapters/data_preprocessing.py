@@ -225,9 +225,12 @@ st.markdown("""
 ####################################### City Refinement #####################
 
 
+#remove column city category  name 3
+
 
 
 st.subheader("City Refinement")
+
 
 # Get city counts and sort them
 city_counts = df_cleaned['City'].value_counts().sort_index()
@@ -261,6 +264,9 @@ To maintain data relevance and avoid skewed analysis, cities with fewer than 10 
 """)
 df_cleaned = df_cleaned[df_cleaned['City'].isin(city_list)]
 st.write("City count :", df_cleaned['City'].nunique())
+
+
+
 
 
 
@@ -308,59 +314,85 @@ df_cleaned = df_cleaned[df_cleaned['Degree'] != 'Others']
 ######################### handling categorical data ############################################################################
 
 
+#gender encoding
+
+st.subheader("Encoding")
 
 
-# # Count occurrences of each age
-# age_distribution = df_cleaned["Age"].value_counts().sort_index()
+st.write(df_cleaned[['Gender']].head(2))
 
-# # Visualize Age distribution with a line chart
-# st.subheader("Age Distribution")
+st.write("""
+To standardize the **Gender** column, we encode it as follows:
+- **Male → 0**
+- **Female → 1**
 
-# fig, ax = plt.subplots(figsize=(4, 2))
-# sns.lineplot(x=age_distribution.index, y=age_distribution.values, marker="o", color="blue", ax=ax)
-# ax.axvline(35, color="red", linestyle="dashed", linewidth=2, label="Threshold: 35")
-# ax.set_title("Age Distribution (Before Filtering)")
-# ax.set_xlabel("Age")
-# ax.set_ylabel("Count")
-# ax.legend()
-# st.pyplot(fig)
+This conversion ensures that the gender data is in numerical format, making it easier for analysis and modeling.
+""")
 
-# # Remove rows where Age is 35 or more
-# df_cleaned = df_cleaned[df_cleaned["Age"] < 35]
-
-# # Display message after removal
-# st.write("Samples with Age ≥ 35 have been removed.")
-
-
-# ???????????????????????????????????????????????????????????????????????????????///////////////////////
-
-st.subheader("Sleep Duration Encoding")
-
-if 'Sleep Duration' in df_cleaned.columns:
-    sleep_duration_counts = df_cleaned['Sleep Duration'].value_counts()
-    st.write(sleep_duration_counts)
-else:
-    st.write("The 'Sleep Duration' column does not exist in the dataset.")
+# Encode Gender column (Male → 0, Female → 1)
+df_cleaned['Gender'] = df_cleaned['Gender'].map({'Male': 0, 'Female': 1})
 
 
 
 
-# ------------------------------------------------------------------------------------
+st.write(df_cleaned[['Sleep Duration']].head())
+# Explanation
+st.write("""
+To standardize the **Sleep Duration** column, we encode it as follows:
+- **Less than 5 hours → 0**
+- **5-6 hours → 1**
+- **7-8 hours → 2**
+- **More than 8 hours → 3**
 
-# st.subheader("Degree")
+This conversion ensures that sleep duration is represented numerically for better analysis.
+""")
 
-# if 'Degree' in df_cleaned.columns:
-#     dietary_habits_counts = df_cleaned['Degree'].value_counts()
-#     st.write(dietary_habits_counts)
-# else:
-#     st.write("The 'Degree' column does not exist in the dataset.")
+# Encode Sleep Duration column
+sleep_duration_mapping = {
+    'Less than 5 hours': 0,
+    '5-6 hours': 1,
+    '7-8 hours': 2,
+    'More than 8 hours': 3
+}
+
+df_cleaned['Sleep Duration'] = df_cleaned['Sleep Duration'].map(sleep_duration_mapping)
 
 
-# if 'Degree' in df_cleaned.columns:
-#     st.subheader("🎓 Degree Categories and Row Counts")
-#     degree_counts = df_cleaned['Degree'].value_counts()
-#     st.write(degree_counts)
-# else:
-#     st.write("The 'Degree' column does not exist in the dataset.")
+
+st.write(df_cleaned[['Have you ever had suicidal thoughts ?']].head(2))
+
+# Explanation
+st.write("""
+To standardize the **'Have you ever had suicidal thoughts ?'** column, we encode it as follows:
+- **No → 0**
+- **Yes → 1**
+
+This conversion ensures that the data is in numerical format for better analysis.
+""")
+
+# Encode the column
+df_cleaned['Have you ever had suicidal thoughts ?'] = df_cleaned['Have you ever had suicidal thoughts ?'].map({'No': 0, 'Yes': 1})
+
+# Display the updated dataframe
+
+st.write(df_cleaned[['Family History of Mental Illness']].head(2))
+st.write("""
+To standardize the **'Family History of Mental Illness'** column, we encode it as follows:
+- **No → 0**
+- **Yes → 1**
+
+This conversion ensures that the data is in numerical format for better analysis.
+""")
+
+# Encode the column
+df_cleaned['Family History of Mental Illness'] = df_cleaned['Family History of Mental Illness'].map({'No': 0, 'Yes': 1})
+
+# Display the updated dataframe
+st.write("Encoded Data Sample:")
+
+
+st.write(df_cleaned.head())
+
+
 
 
