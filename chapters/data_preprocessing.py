@@ -56,11 +56,10 @@ st.write("Missing value count:", missing_after)
 
 ####################################### HANDLING DUPLICATE ROWS #####################
 
-#check duplicate rows 
 
 st.subheader("Duplicate Rows Analysis")
 duplicate_rows = df_cleaned.duplicated().sum()
-st.write("Missing value count:", duplicate_rows)
+st.write("Duplicate Rows count:", duplicate_rows)
 if duplicate_rows > 0:
     st.write("Duplicate rows have been removed.")
     df_cleaned.drop_duplicates(inplace=True)
@@ -72,9 +71,6 @@ else:
 
 
 ####################################### HANDLING UNWANTED COLUMNS #####################
-
-
-
 st.subheader("Age Data Refinement")
 
 age_counts = df_cleaned['Age'].value_counts().sort_index()
