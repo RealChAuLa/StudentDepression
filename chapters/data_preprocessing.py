@@ -11,7 +11,7 @@ def load_data():
     return df
 
 st.set_page_config(layout="wide", initial_sidebar_state="collapsed")
-st.image("./assets/DataExploration.jpg", use_container_width=True)
+st.image("./assets/3.jpg", use_container_width=True)
 st.title("Data Preprocessing")
 
 st.write(
