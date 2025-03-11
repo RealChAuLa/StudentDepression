@@ -101,6 +101,10 @@ st.write("Max Age in Dataset:", df_cleaned['Age'].max())
 
 
 
+
+#########################hanling categorical data##############################
+
+
 # # Count occurrences of each age
 # age_distribution = df_cleaned["Age"].value_counts().sort_index()
 
@@ -126,19 +130,26 @@ st.write("Max Age in Dataset:", df_cleaned['Age'].max())
 
 
 
-# if 'Sleep Duration' in df_cleaned.columns:
-#     st.subheader("🛏️ Sleep Duration Categories and Counts")
-#     sleep_duration_counts = df_cleaned['Sleep Duration'].value_counts()
-#     st.write(sleep_duration_counts)
-# else:
-#     st.write("The 'Sleep Duration' column does not exist in the dataset.")
+st.subheader("Sleep Duration Encoding")
 
-# if 'Dietary Habits' in df_cleaned.columns:
-#     st.subheader("🍽️ Dietary Habits Categories and Counts")
-#     dietary_habits_counts = df_cleaned['Dietary Habits'].value_counts()
-#     st.write(dietary_habits_counts)
-# else:
-#     st.write("The 'Dietary Habits' column does not exist in the dataset.")
+if 'Sleep Duration' in df_cleaned.columns:
+    sleep_duration_counts = df_cleaned['Sleep Duration'].value_counts()
+    st.write(sleep_duration_counts)
+else:
+    st.write("The 'Sleep Duration' column does not exist in the dataset.")
+
+
+
+
+# ------------------------------------------------------------------------------------
+
+st.subheader("Dietary Habits Encoding")
+
+if 'Dietary Habits' in df_cleaned.columns:
+    dietary_habits_counts = df_cleaned['Dietary Habits'].value_counts()
+    st.write(dietary_habits_counts)
+else:
+    st.write("The 'Dietary Habits' column does not exist in the dataset.")
 
 
 # if 'Degree' in df_cleaned.columns:
