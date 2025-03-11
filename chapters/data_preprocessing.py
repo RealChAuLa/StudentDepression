@@ -61,16 +61,14 @@ st.write("Missing value count:", missing_after)
 
 
 
-st.subheader("Age Distribution")
+st.subheader("Age Data Refinement")
 
-# Sample dataframe (use your actual df_cleaned)
 age_counts = df_cleaned['Age'].value_counts().sort_index()
 age_distribution = pd.DataFrame({
     'Age': age_counts.index,
     'Count': age_counts.values
 })
 
-# Show the full age distribution without filtering
 chart = alt.Chart(age_distribution).mark_bar(color='#00A9AC').encode(
     x='Age:O',
     y='Count:Q'
@@ -79,17 +77,13 @@ chart = alt.Chart(age_distribution).mark_bar(color='#00A9AC').encode(
     height=400
 )
 
-# Display the chart
 st.altair_chart(chart)
 
 st.markdown(
     "As you can see in the age column, there are very few data points for ages 35 and above. These ages have to remove from the dataset to ensure that the analysis focuses on more common age groups."
 )
 
-# Now remove ages 35 and above from the dataset
 df_cleaned = df_cleaned[df_cleaned['Age'] < 35]
-
-# st.markdown('<p style="color:green; font-weight:bold;">Samples with Age 35 and above 35 have been removed.</p>', unsafe_allow_html=True)
 
 st.write("Max Age in Dataset:", df_cleaned['Age'].max())
 
