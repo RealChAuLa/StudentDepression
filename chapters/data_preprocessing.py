@@ -6,23 +6,15 @@ import seaborn as sns
 import altair as alt
 import plotly.express as px
 
-
-def load_data():
-    file_path = "data/Student_Depression_Dataset.csv"
-    df = pd.read_csv(file_path)
-    return df
+from chapters.overview import df
 
 st.set_page_config(layout="wide", initial_sidebar_state="collapsed")
-st.image("./assets/3.jpg", use_container_width=True)
+st.image("./assets/preprocessingBanner.jpg", use_container_width=True)
 st.title("Data Preprocessing")
 
 st.write(
     "Data preprocessing is important because raw data is often messy, missing, or inconsistent. Without cleaning and preparing the data, models may give incorrect results. Preprocessing helps by fixing missing values, removing errors, and making the data easier for models to understand, which improves accuracy and performance."
 )
-
-df = load_data()
-
-
 
 
 ####################################### HANDLING MISSING VALUE #####################
@@ -70,6 +62,8 @@ else:
 
 
 ####################################### HANDLING UNWANTED COLUMNS #####################
+
+
 st.subheader("Age Data Refinement")
 
 age_counts = df_cleaned['Age'].value_counts().sort_index()
@@ -100,9 +94,11 @@ st.write("Max Age in Dataset:", df_cleaned['Age'].max())
 
 
 
+####################################### Sleep Duration Refinement #####################
 
 
-# ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 
 st.subheader("Sleep Duration Refinement")
 
@@ -161,7 +157,12 @@ st.write("Count of 'Others' category:", others_count)
 
 
 
-# ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+####################################### Profession Refinement #####################
+
+
+
 
 st.subheader("Profession Refinement")
 profession_counts = df_cleaned['Profession'].value_counts().reset_index()
@@ -197,9 +198,6 @@ fig.update_layout(
 # Display the chart in Streamlit
 st.plotly_chart(fig, use_container_width=True)
 
-# Create a two-column layout
-col1, col2 = st.columns(2)
-
 st.write("""
 In this analysis, only the "Student" profession will be considered, as the other professions contain only a small amount of data. Removing these less-represented professions helps focus the analysis on the more significant data points and ensures a clearer understanding of the distribution of the "Student" profession.
 """)
@@ -224,7 +222,7 @@ st.markdown("""
 
 
 
-# ?????????????????????????????????????????????????????????????///////////////////////////////////////////////////////////////////
+####################################### City Refinement #####################
 
 
 
@@ -266,7 +264,7 @@ st.write("City count :", df_cleaned['City'].nunique())
 
 
 
-# ?????????????????????????????????????????????????????????????????????????????????????///////////////////////
+####################################### Dietary Refinement #####################
 
 
 st.subheader("Dietary Refinement")
