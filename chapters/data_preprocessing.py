@@ -163,9 +163,6 @@ st.write("Count of 'Others' category:", others_count)
 
 # ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-
-
 st.subheader("Profession Refinement")
 profession_counts = df_cleaned['Profession'].value_counts().reset_index()
 profession_counts.columns = ['Profession', 'Count']
@@ -212,6 +209,97 @@ df_cleaned = df_cleaned[df_cleaned['Profession'] == 'Student']
 
 st.write("Profession count after filtering:", df_cleaned['Profession'].value_counts().values[0])
 
+# Drop the 'Profession' column as it's no longer needed
+df_cleaned.drop(columns=['Profession'], inplace=True)
+
+# Display message with emphasis
+st.markdown("""
+    <div style="background-color:#ffcccb; padding:10px; border-radius:5px;">
+        <b style="color:#b30000;">The 'Profession' column has been removed
+        since only 'Student' remains as the profession.</b> 
+    </div>
+""", unsafe_allow_html=True)
+
+
+
+
+
+# ?????????????????????????????????????????????????????????????///////////////////////////////////////////////////////////////////
+
+
+
+
+st.subheader("City Refinement")
+
+# Get city counts and sort them
+city_counts = df_cleaned['City'].value_counts().sort_index()
+city_distribution = pd.DataFrame({
+    'City': city_counts.index,
+    'Count': city_counts.values
+})
+
+# Create bar chart for city distribution
+chart = alt.Chart(city_distribution).mark_bar(color='#EA7369').encode(
+    x='City:O',
+    y='Count:Q'
+).properties(
+    width=600,
+    height=400
+)
+
+# Display the chart in Streamlit
+st.altair_chart(chart)
+
+
+# remove city columns below 10
+city_counts = df_cleaned['City'].value_counts()
+city_counts = city_counts[city_counts > 10]
+city_list = city_counts.index.tolist()
+
+st.write("City count :", df_cleaned['City'].nunique())
+
+st.write("""
+To maintain data relevance and avoid skewed analysis, cities with fewer than 10 data entries have been removed. This ensures that only cities with a significant number of records are considered in the analysis.
+""")
+df_cleaned = df_cleaned[df_cleaned['City'].isin(city_list)]
+st.write("City count :", df_cleaned['City'].nunique())
+
+
+
+# ?????????????????????????????????????????????????????????????????????????????????????///////////////////////
+
+
+st.subheader("Dietary Refinement")
+
+if 'Dietary Habits' in df_cleaned.columns:
+    dietary_habits_counts = df_cleaned['Dietary Habits'].value_counts()
+    st.write(dietary_habits_counts)
+
+    # Explanation paragraph
+    st.write("""
+    In the 'Dietary Habits' column, the 'Others' category contains only a small amount of data. 
+    To maintain data consistency and focus on the major dietary habits, we have removed entries categorized as 'Others.'
+    """)
+
+    # Remove 'Others' category
+    df_cleaned = df_cleaned[df_cleaned['Dietary Habits'] != 'Others']
+
+else:
+    st.write("The 'Dietary Habits' column does not exist in the dataset.")
+
+
+#count of others in column dietary habits
+
+others_count = df_cleaned[df_cleaned['Dietary Habits'] == 'Others'].shape[0]
+st.write("Count of 'Others' category:", others_count)
+
+
+
+
+
+# ??????????????????????????????????????????????///////////////////////
+
+df_cleaned = df_cleaned[df_cleaned['Degree'] != 'Others']
 
 
 
@@ -219,8 +307,7 @@ st.write("Profession count after filtering:", df_cleaned['Profession'].value_cou
 
 
 
-
-#########################hanling categorical data############################################################################
+######################### handling categorical data ############################################################################
 
 
 
@@ -262,13 +349,13 @@ else:
 
 # ------------------------------------------------------------------------------------
 
-st.subheader("Dietary Habits Encoding")
+# st.subheader("Degree")
 
-if 'Dietary Habits' in df_cleaned.columns:
-    dietary_habits_counts = df_cleaned['Dietary Habits'].value_counts()
-    st.write(dietary_habits_counts)
-else:
-    st.write("The 'Dietary Habits' column does not exist in the dataset.")
+# if 'Degree' in df_cleaned.columns:
+#     dietary_habits_counts = df_cleaned['Degree'].value_counts()
+#     st.write(dietary_habits_counts)
+# else:
+#     st.write("The 'Degree' column does not exist in the dataset.")
 
 
 # if 'Degree' in df_cleaned.columns:
