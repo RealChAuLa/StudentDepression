@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import altair as alt
 import plotly.express as px
+from sklearn.preprocessing import LabelEncoder
+
 
 from chapters.overview import df
 
@@ -384,14 +386,76 @@ To standardize the **'Family History of Mental Illness'** column, we encode it a
 This conversion ensures that the data is in numerical format for better analysis.
 """)
 
+
+# ????????????????????????????????????????///////////////////////city encode?????????????????///
+
+
+
+st.subheader("Encoding")
+
+# Explanation
+st.write("""
+To standardize the **City** column, we assign a unique numeric value to each city using Label Encoding.
+This allows us to handle categorical data efficiently.
+""")
+
+# Apply Label Encoding
+label_encoder = LabelEncoder()
+df_cleaned['City'] = label_encoder.fit_transform(df_cleaned['City'])
+
+# Display the encoded City column
+# st.write("Encoded Data Sample:")
+st.write(df_cleaned[['City']].head())
+
+
 # Encode the column
 df_cleaned['Family History of Mental Illness'] = df_cleaned['Family History of Mental Illness'].map({'No': 0, 'Yes': 1})
 
 # Display the updated dataframe
+st.write("Encoded city:")
+
+
+st.subheader("Encoding")
+
+# Explanation
+st.write("""
+To standardize the **Dietary Habits** column, we assign a unique numeric value to each category using Label Encoding.
+""")
+
+# Apply Label Encoding
+label_encoder = LabelEncoder()
+df_cleaned['Dietary Habits'] = label_encoder.fit_transform(df_cleaned['Dietary Habits'])
+
+# Display the encoded column
+st.write("Encoded Dietary Habits")
+st.write(df_cleaned[['Dietary Habits']].head())
+
+
+
+st.subheader("Encoding - Degree")
+
+# Explanation
+st.write("""
+To standardize the **Degree** column, we assign a unique numeric value to each category using Label Encoding.
+""")
+
+# Apply Label Encoding
+label_encoder = LabelEncoder()
+df_cleaned['Degree'] = label_encoder.fit_transform(df_cleaned['Degree'])
+
+# Display the encoded column
 st.write("Encoded Data Sample:")
+st.write(df_cleaned[['Degree']].head())
 
 
-st.write(df_cleaned.head())
+# Remove the ID column if it exists
+if 'id' in df_cleaned.columns:
+    df_cleaned.drop(columns=['id'], inplace=True)
+
+
+
+# Display the first 10 rows
+st.write(df_cleaned.head(10))
 
 
 
