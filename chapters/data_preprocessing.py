@@ -554,3 +554,7 @@ label_mapping_df = pd.DataFrame(list(label_mapping.items()), columns=['Dietary H
 # Display the DataFrame as a table
 st.write("Label Encoding Mapping for Dietary Habits:")
 st.write(label_mapping_df)
+
+
+#Export Preprocessed Data to PreprocessedData.csv
+df_cleaned.to_csv("data/PreprocessedData.csv", index=False)
