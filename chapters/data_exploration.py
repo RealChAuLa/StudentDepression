@@ -1,8 +1,6 @@
 import time
 import streamlit as st
 import pandas as pd
-import seaborn as sns
-import matplotlib.pyplot as plt
 import numpy as np
 import plotly.express as px
 import pydeck as pdk
@@ -137,6 +135,7 @@ with col2:
 
 
 
+
 # Calculate age distribution
 age_counts = df['Age'].value_counts().sort_index()
 age_distribution = pd.DataFrame({
@@ -189,56 +188,92 @@ status_text.text("Age distribution complete!")
 
 
 
-
+col1, col2 = st.columns(2)
 ##################### SLEEP DURATION DISTRIBUTION #####################
 
 
 
 
+with col1:
+    st.subheader("Sleep Duration Distribution")
+    # Get sleep duration counts
+    sleep_counts = df['Sleep Duration'].value_counts().reset_index()
+    sleep_counts.columns = ['Sleep Duration', 'Count']
 
-st.subheader("Sleep Duration Distribution")
-# Get sleep duration counts
-sleep_counts = df['Sleep Duration'].value_counts().reset_index()
-sleep_counts.columns = ['Sleep Duration', 'Count']
+    # Sort by sleep duration (assuming it's numeric)
+    sleep_counts = sleep_counts.sort_values('Sleep Duration')
 
-# Sort by sleep duration (assuming it's numeric)
-sleep_counts = sleep_counts.sort_values('Sleep Duration')
+    # Create bar chart using plotly express
+    fig = px.bar(
+        sleep_counts,
+        x='Sleep Duration',
+        y='Count',
+        #title='Sleep Duration Distribution',
+        labels={'Sleep Duration': 'Hours of Sleep', 'Count': 'Number of Records'},
+        text='Count',  # Display count on bars
+        color='Sleep Duration',
+        color_continuous_scale='RdBu'  # Red to Blue color scale
+    )
 
-# Create bar chart using plotly express
-fig = px.bar(
-    sleep_counts,
-    x='Sleep Duration',
-    y='Count',
-    #title='Sleep Duration Distribution',
-    labels={'Sleep Duration': 'Hours of Sleep', 'Count': 'Number of Records'},
-    text='Count',  # Display count on bars
-    color='Sleep Duration',
-    color_continuous_scale='RdBu'  # Red to Blue color scale
-)
+    # Customize the chart
+    fig.update_traces(
+        textposition='outside',
+        texttemplate='%{text}',
+        marker_line_width=1,
+        marker_line_color='white'
+    )
 
-# Customize the chart
-fig.update_traces(
-    textposition='outside',
-    texttemplate='%{text}',
-    marker_line_width=1,
-    marker_line_color='white'
-)
+    fig.update_layout(
+        xaxis_title='Sleep Duration (hours)',
+        yaxis_title='Count',
+        coloraxis_showscale=False  # Hide the color scale
+    )
 
-fig.update_layout(
-    xaxis_title='Sleep Duration (hours)',
-    yaxis_title='Count',
-    coloraxis_showscale=False  # Hide the color scale
-)
+    # Display the chart in Streamlit
+    st.plotly_chart(fig, use_container_width=True)
 
-# Display the chart in Streamlit
-st.plotly_chart(fig, use_container_width=True)
+with col2:
+    st.subheader("Dietary Habits Distribution")
+    # Get dietary habits counts
+    diet_counts = df['Dietary Habits'].value_counts().reset_index()
+    diet_counts.columns = ['Dietary Habits', 'Count']
 
-# Create a two-column layout
+    # Create bar chart using plotly express
+    fig = px.bar(
+        diet_counts,
+        x='Dietary Habits',
+        y='Count',
+        #title='Dietary Habits Distribution',
+        labels={'Dietary Habits': 'Diet Type', 'Count': 'Number of Records'},
+        text='Count',  # Display count on bars
+        color='Dietary Habits',
+        color_discrete_map={'Healthy': 'green', 'Unhealthy': 'red'}
+    )
+
+    # Customize the chart
+    fig.update_traces(
+        textposition='outside',
+        texttemplate='%{text}',
+        marker_line_width=1,
+        marker_line_color='white'
+    )
+
+    fig.update_layout(
+        xaxis_title='Diet Type',
+        yaxis_title='Count',
+        coloraxis_showscale=False  # Hide the color scale
+    )
+
+    # Display the chart in Streamlit
+    st.plotly_chart(fig, use_container_width=True)
+
+
+
+
+
 col1, col2 = st.columns(2)
-
-
-
 ##################### ACADEMIC PRESSURE DISTRIBUTION #####################
+
 
 
 
@@ -287,7 +322,12 @@ with col1:
 
 
 
+
+
 ##################### STUDY SATISFACTION DISTRIBUTION #####################
+
+
+
 
 
 with col2:
@@ -337,66 +377,186 @@ with col2:
 
 
 
+col1, col2 = st.columns(2)
+##################### Suicidal Thoughts Distribution pie chart #####################
 
 
 
+
+
+with col1:
+    st.subheader("Suicidal Thoughts Distribution")
+    # Get counts for Suicidal Thoughts
+    thoughts_counts = df["Have you ever had suicidal thoughts ?"].value_counts().reset_index()
+    thoughts_counts.columns = ['Have you ever had suicidal thoughts ?', 'Count']
+
+    # Create pie chart using plotly express with custom colors
+    fig = px.pie(
+        thoughts_counts,
+        values='Count',
+        names='Have you ever had suicidal thoughts ?',
+        #title='Suicidal Thoughts Distribution',
+        hover_data=['Count'],
+        labels={'Count': 'Number of Records'},
+        color='Have you ever had suicidal thoughts ?',
+        color_discrete_map={'Yes': 'red', 'No': 'green'}
+    )
+
+    # Customize the chart
+    fig.update_traces(
+        textposition='inside',
+        textinfo='percent+label+value',
+        hole=0.3,  # Creates a donut chart effect - remove if you prefer a regular pie chart
+        marker=dict(line=dict(color='#FFFFFF', width=2))
+    )
+
+    # Display the chart in Streamlit
+    st.plotly_chart(fig, use_container_width=True)
+
+
+
+
+with col2:
+    ####### Family History of Mental Illness Pie Chart #######
+
+
+
+    st.subheader("Have Mental Illness in Family History")
+    # Get counts for Family History of Mental Health Illness
+    family_counts = df["Family History of Mental Illness"].value_counts().reset_index()
+    family_counts.columns = ['Family History of Mental Illness', 'Count']
+
+    # Create pie chart using plotly express with custom colors
+    fig_family = px.pie(
+        family_counts,
+        values='Count',
+        names='Family History of Mental Illness',
+        #title='Family History of Mental Illness Distribution',
+        hover_data=['Count'],
+        labels={'Count': 'Number of Records'},
+        color='Family History of Mental Illness',
+        color_discrete_map={'Yes': 'black', 'No': 'gray'}
+    )
+
+    # Customize the chart
+    fig_family.update_traces(
+        textposition='inside',
+        textinfo='percent+label+value',
+        hole=0.3,  # Creates a donut chart effect - remove if you prefer a regular pie chart
+        marker=dict(line=dict(color='#FFFFFF', width=2))
+    )
+
+    # Display the chart in Streamlit
+    st.plotly_chart(fig_family, use_container_width=True)
+
+
+
+
+
+
+
+
+col1, col2 = st.columns(2)
 ##################### WORK/STUDY HOURS DISTRIBUTION #####################
 
 
 
 
 
+with col1:
+    st.subheader("Work/Study Hours Distribution")
+    # Get counts for each integer value (0-12)
+    hour_counts = df["Work/Study Hours"].value_counts().reset_index()
+    hour_counts.columns = ['Hours', 'Count']
 
-st.subheader("Work/Study Hours Distribution")
-# Get counts for each integer value (0-12)
-hour_counts = df["Work/Study Hours"].value_counts().reset_index()
-hour_counts.columns = ['Hours', 'Count']
+    # Sort by hours to ensure correct order
+    hour_counts = hour_counts.sort_values('Hours')
 
-# Sort by hours to ensure correct order
-hour_counts = hour_counts.sort_values('Hours')
+    # Make sure we have all values from 0-12
+    all_hours = pd.DataFrame({'Hours': range(13)})
+    hour_counts = pd.merge(all_hours, hour_counts, on='Hours', how='left').fillna(0)
+    hour_counts['Count'] = hour_counts['Count'].astype(int)
 
-# Make sure we have all values from 0-12
-all_hours = pd.DataFrame({'Hours': range(13)})
-hour_counts = pd.merge(all_hours, hour_counts, on='Hours', how='left').fillna(0)
-hour_counts['Count'] = hour_counts['Count'].astype(int)
+    # Create a custom blue color gradient (starting with a visible light blue)
+    # We'll use a range from #D4E6F1 (light blue) to #0D47A1 (dark blue)
+    n_colors = 13  # 0-12 hours
+    blue_gradient = [
+        f'rgba({max(30, int(30 + (200-i*17)))}, {max(100, int(144 - i*10))}, {min(255, int(180 + i*6))}, 0.9)'
+        for i in range(n_colors)
+    ]
 
-# Create a custom blue color gradient (starting with a visible light blue)
-# We'll use a range from #D4E6F1 (light blue) to #0D47A1 (dark blue)
-n_colors = 13  # 0-12 hours
-blue_gradient = [
-    f'rgba({max(30, int(30 + (200-i*17)))}, {max(100, int(144 - i*10))}, {min(255, int(180 + i*6))}, 0.9)'
-    for i in range(n_colors)
-]
+    # Create bar chart
+    fig = go.Figure()
+    fig.add_trace(go.Bar(
+        x=hour_counts['Hours'],
+        y=hour_counts['Count'],
+        text=hour_counts['Count'],
+        textposition='outside',
+        marker_color=blue_gradient,
+        marker_line_color='white',
+        marker_line_width=1,
+    ))
 
-# Create bar chart
-fig = go.Figure()
-fig.add_trace(go.Bar(
-    x=hour_counts['Hours'],
-    y=hour_counts['Count'],
-    text=hour_counts['Count'],
-    textposition='outside',
-    marker_color=blue_gradient,
-    marker_line_color='white',
-    marker_line_width=1,
-))
+    # Update layout
+    fig.update_layout(
+        #title="Work/Study Hours Distribution",
+        xaxis=dict(
+            #title="Work/Study Hours",
+            tickmode='linear',  # Force all ticks to show
+            tick0=0,
+            dtick=1,  # Step size of 1
+            range=[-0.5, 12.5]  # Add some padding
+        ),
+        yaxis_title="Count",
+        bargap=0.2  # Gap between bars
+    )
 
-# Update layout
-fig.update_layout(
-    #title="Work/Study Hours Distribution",
-    xaxis=dict(
-        #title="Work/Study Hours",
-        tickmode='linear',  # Force all ticks to show
-        tick0=0,
-        dtick=1,  # Step size of 1
-        range=[-0.5, 12.5]  # Add some padding
-    ),
-    yaxis_title="Count",
-    bargap=0.2  # Gap between bars
-)
+    # Display the chart in Streamlit
+    st.plotly_chart(fig, use_container_width=True)
 
-# Display the chart in Streamlit
-st.plotly_chart(fig, use_container_width=True)
+with col2:
+    ##################### FINANCIAL STRESS #####################
+    st.subheader("Financial Stress Distribution")
+    # Get counts for Financial Stress
+    stress_counts = df["Financial Stress"].value_counts().reset_index()
+    stress_counts.columns = ['Stress Level', 'Count']
 
+    # Sort by stress level to ensure correct order (assuming it's a numeric scale)
+    stress_counts = stress_counts.sort_values('Stress Level')
+
+    # Create the bar chart for Financial Stress
+    fig_stress = px.bar(
+        stress_counts,
+        x='Stress Level',
+        y='Count',
+        text='Count',
+        labels={'Stress Level': 'Financial Stress Level', 'Count': 'Number of Students'},
+        #title='Financial Stress Distribution'
+    )
+
+    # Customize the chart with a red gradient (higher stress = darker red)
+    stress_levels = len(stress_counts)
+    red_gradient = [
+        f'rgba({180 + i * 75 / stress_levels}, {50 - i * 50 / stress_levels}, {50 - i * 50 / stress_levels}, 0.8)'
+        for i in range(stress_levels)]
+
+    fig_stress.update_traces(
+        marker_color=red_gradient,
+        marker_line_color='white',
+        marker_line_width=1,
+        textposition='outside'
+    )
+
+    fig_stress.update_layout(
+        xaxis=dict(
+            title="Financial Stress Level",
+            tickmode='linear'
+        ),
+        yaxis_title="Number of Students"
+    )
+
+    # Display the chart
+    st.plotly_chart(fig_stress, use_container_width=True)
 
 
 
@@ -459,32 +619,131 @@ st.plotly_chart(fig, use_container_width=True)
 
 
 
-
-
-
-
-##################### CORRELATION HEATMAP #####################
-
-
+col1, col2 = st.columns(2)
+########################## Work Pressure DISTRIBUTION ##########################
 
 
 
 
 
+with col1:
+    st.subheader("Work Pressure Distribution")
+    # Get work pressure counts
+    pressure_counts = df['Work Pressure'].value_counts().reset_index()
+    pressure_counts.columns = ['Work Pressure', 'Count']
+
+    # Create bar chart using plotly express
+    fig = px.bar(
+        pressure_counts,
+        x='Work Pressure',
+        y='Count',
+        #title='Work Pressure Distribution',
+        labels={'Work Pressure': 'Pressure Level', 'Count': 'Number of Records'},
+        text='Count',  # Display count on bars
+        color='Work Pressure',
+    )
+
+    # Display the chart in Streamlit
+    st.plotly_chart(fig, use_container_width=True)
 
 
-# Correlation Heatmap
-st.subheader("Correlation Heatmap")
-num_df = df.select_dtypes(include=[np.number])
-fig, ax = plt.subplots(figsize=(10, 6))
-sns.heatmap(num_df.corr(), annot=True, cmap="coolwarm", fmt=".2f", ax=ax)
-st.pyplot(fig)
+
+with col2:
+    ########################## Job Satisfaction DISTRIBUTION ##########################
+
+    st.subheader("Job Satisfaction Distribution")
+    # Get job satisfaction counts
+    satisfaction_counts = df['Job Satisfaction'].value_counts().reset_index()
+    satisfaction_counts.columns = ['Job Satisfaction', 'Count']
+
+    # Create bar chart using plotly express
+    fig = px.bar(
+        satisfaction_counts,
+        x='Job Satisfaction',
+        y='Count',
+        #title='Job Satisfaction Distribution',
+        labels={'Job Satisfaction': 'Satisfaction Level', 'Count': 'Number of Records'},
+        text='Count',  # Display count on bars
+        color='Job Satisfaction',
+    )
+
+    # Display the chart in Streamlit
+    st.plotly_chart(fig, use_container_width=True)
+
+
+
+
+
+########################## Profession DISTRIBUTION ##########################
+
+st.subheader("Profession Distribution")
+# Get profession counts
+profession_counts = df['Profession'].value_counts().reset_index()
+profession_counts.columns = ['Profession', 'Count']
+# Create bar chart using plotly express
+fig = px.bar(
+    profession_counts,
+    x='Profession',
+    y='Count',
+    #title='Profession Distribution',
+    labels={'Profession': 'Profession', 'Count': 'Number of Records'},
+    text='Count',  # Display count on bars
+    color='Profession',
+    color_discrete_map={'Student': 'blue', 'Working Professional': 'green', 'Unemployed': 'red'}
+)
+
+# Customize the chart
+fig.update_traces(
+    textposition='outside',
+    texttemplate='%{text}',
+    marker_line_width=1,
+    marker_line_color='white'
+)
+
+fig.update_layout(
+    xaxis_title='Profession',
+    yaxis_title='Count',
+    coloraxis_showscale=False  # Hide the color scale
+)
+
+# Display the chart in Streamlit
+st.plotly_chart(fig, use_container_width=True)
+
+
+
+
+
+########################### Degree DISTRIBUTION ###########################
+
+
+
+
+
+st.subheader("Degree Distribution")
+# Get degree counts
+degree_counts = df['Degree'].value_counts().reset_index()
+degree_counts.columns = ['Degree', 'Count']
+# Create bar chart using plotly express
+fig = px.bar(
+    degree_counts,
+    x='Degree',
+    y='Count',
+    #title='Degree Distribution',
+    labels={'Degree': 'Degree', 'Count': 'Number of People'},
+    text='Count',  # Display count on bars
+    color='Degree',
+)
+
+# Display the chart in Streamlit
+st.plotly_chart(fig, use_container_width=True)
+
 
 
 
 
 
 ########################## CITY DISTRIBUTION ##########################
+
 
 
 
