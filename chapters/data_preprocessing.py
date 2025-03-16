@@ -1,8 +1,6 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
 import altair as alt
 import plotly.express as px
 from sklearn.preprocessing import LabelEncoder
@@ -63,34 +61,45 @@ else:
     st.write("No duplicate rows found in the dataset.")
 
 
+
+
 ####################################### HANDLING UNWANTED COLUMNS #####################
 
 
-st.subheader("Age Data Refinement")
 
-age_counts = df_cleaned['Age'].value_counts().sort_index()
-age_distribution = pd.DataFrame({
-    'Age': age_counts.index,
-    'Count': age_counts.values
-})
+st.header("Refinement of Categorical Columns")
 
-chart = alt.Chart(age_distribution).mark_bar(color='#00A9AC').encode(
-    x='Age:O',
-    y='Count:Q'
-).properties(
-    width=600,
-    height=400
-)
 
-st.altair_chart(chart)
+col1 , col2 = st.columns(2)
 
-st.markdown(
-    "As you can see in the age column, there are very few data points for ages 35 and above. These ages have to remove from the dataset to ensure that the analysis focuses on more common age groups."
-)
+with col1:
 
-df_cleaned = df_cleaned[df_cleaned['Age'] < 35]
+    st.subheader("Age Data Refinement")
 
-st.write("Max Age in Dataset:", df_cleaned['Age'].max())
+    age_counts = df_cleaned['Age'].value_counts().sort_index()
+    age_distribution = pd.DataFrame({
+        'Age': age_counts.index,
+        'Count': age_counts.values
+    })
+
+    chart = alt.Chart(age_distribution).mark_bar(color='#00A9AC').encode(
+        x='Age:O',
+        y='Count:Q'
+    ).properties(
+        width=600,
+        height=400
+    )
+
+    st.altair_chart(chart)
+
+    st.markdown(
+        "As you can see in the age column, there are very few data points for ages 35 and above. These ages have to remove from the dataset to ensure that the analysis focuses on more common age groups."
+    )
+
+    df_cleaned = df_cleaned[df_cleaned['Age'] < 35]
+
+    st.write("Max Age in Dataset:", df_cleaned['Age'].max())
+
 
 
 
@@ -101,61 +110,57 @@ st.write("Max Age in Dataset:", df_cleaned['Age'].max())
 
 
 
+with col2:
+    st.subheader("Sleep Duration Refinement")
 
-st.subheader("Sleep Duration Refinement")
+    sleep_counts = df_cleaned['Sleep Duration'].value_counts().reset_index()
+    sleep_counts.columns = ['Sleep Duration', 'Count']
 
-st.write("""
-This section provides an overview of the user's sleep hours. The sleep durations are categorized into the following groups:
-""")
+    # Sort by sleep duration (assuming it's numeric)
+    sleep_counts = sleep_counts.sort_values('Sleep Duration')
 
-sleep_counts = df_cleaned['Sleep Duration'].value_counts().reset_index()
-sleep_counts.columns = ['Sleep Duration', 'Count']
+    fig = px.bar(
+        sleep_counts,
+        x='Sleep Duration',
+        y='Count',
+        labels={'Sleep Duration': 'Hours of Sleep', 'Count': 'Number of Records'},
+        text='Count',  # Display count on bars
+        color='Sleep Duration',  # You can still keep color if needed
+    )
 
-# Sort by sleep duration (assuming it's numeric)
-sleep_counts = sleep_counts.sort_values('Sleep Duration')
+    # Customize the chart
+    fig.update_traces(
+        textposition='outside',
+        texttemplate='%{text}',
+        marker_line_width=1,
+        marker_line_color='white',
+        marker_color='#6ded66' #6ded66 # Apply the light green color to the bars
+    )
 
-fig = px.bar(
-    sleep_counts,
-    x='Sleep Duration',
-    y='Count',
-    labels={'Sleep Duration': 'Hours of Sleep', 'Count': 'Number of Records'},
-    text='Count',  # Display count on bars
-    color='Sleep Duration',  # You can still keep color if needed
-)
+    fig.update_layout(
+        xaxis_title='Sleep Duration (hours)',
+        yaxis_title='Count',
+        coloraxis_showscale=False  # Hide the color scale
+    )
 
-# Customize the chart
-fig.update_traces(
-    textposition='outside',
-    texttemplate='%{text}',
-    marker_line_width=1,
-    marker_line_color='white',
-    marker_color='#6ded66' #6ded66 # Apply the light green color to the bars
-)
+    # Display the chart in Streamlit
+    st.plotly_chart(fig, use_container_width=True)
 
-fig.update_layout(
-    xaxis_title='Sleep Duration (hours)',
-    yaxis_title='Count',
-    coloraxis_showscale=False  # Hide the color scale
-)
+    # Create a two-column layout
+    col1, col2 = st.columns(2)
 
-# Display the chart in Streamlit
-st.plotly_chart(fig, use_container_width=True)
+    # New paragraph about the "Others" category
+    st.write("""
+    We can see that the "Others" category contains only a small amount of data. To maintain the focus on the primary sleep duration categories, the "Others" data will be excluded from the analysis.
+    """)
 
-# Create a two-column layout
-col1, col2 = st.columns(2)
+    # Filter out the "Others" category
+    df_cleaned = df_cleaned[df_cleaned['Sleep Duration'] != 'Others']
 
-# New paragraph about the "Others" category
-st.write("""
-It is worth noting that the "Others" category contains only a small amount of data. To maintain the focus on the primary sleep duration categories, the "Others" data will be excluded from the analysis.
-""")
+    # Display the updated count of  others category
+    others_count = df_cleaned[df_cleaned['Sleep Duration'] == 'Others'].shape[0]
 
-# Filter out the "Others" category
-df_cleaned = df_cleaned[df_cleaned['Sleep Duration'] != 'Others']
-
-# Display the updated count of  others category
-others_count = df_cleaned[df_cleaned['Sleep Duration'] == 'Others'].shape[0]
-
-st.write("Count of 'Others' category:", others_count)
+    st.write("Count of 'Others' category:", others_count)
 
 
 
@@ -204,18 +209,7 @@ In this analysis, only the "Student" profession will be considered, as the other
 #filter student profession
 df_cleaned = df_cleaned[df_cleaned['Profession'] == 'Student']
 
-st.write("Profession count after filtering:", df_cleaned['Profession'].value_counts().values[0])
-
-# # Drop the 'Profession' column as it's no longer needed
-# df_cleaned.drop(columns=['Profession'], inplace=True)
-
-# # Display message with emphasis
-# st.markdown("""
-#     <div style="background-color:#ffcccb; padding:10px; border-radius:5px;">
-#         <b style="color:#b30000;">The 'Profession' column has been removed
-#         since only 'Student' remains as the profession.</b> 
-#     </div>
-# """, unsafe_allow_html=True)
+st.write("Record count after filtering :", df_cleaned['Profession'].value_counts().values[0] , ": (Equals to 'Student' Count)")
 
 
 
@@ -224,7 +218,6 @@ st.write("Profession count after filtering:", df_cleaned['Profession'].value_cou
 ####################################### City Refinement #####################
 
 
-#remove column city category  name 3
 
 
 
@@ -250,73 +243,170 @@ chart = alt.Chart(city_distribution).mark_bar(color='#EA7369').encode(
 # Display the chart in Streamlit
 st.altair_chart(chart)
 
+st.write("City count (Before):", df_cleaned['City'].nunique())
 
-# remove city columns below 10
-city_counts = df_cleaned['City'].value_counts()
-city_counts = city_counts[city_counts > 10]
-city_list = city_counts.index.tolist()
-
-st.write("City count :", df_cleaned['City'].nunique())
+city_counts = df_cleaned["City"].value_counts()
+cities_to_keep = city_counts[city_counts > 10].index
+df_cleaned = df_cleaned[df_cleaned["City"].isin(cities_to_keep)]
 
 st.write("""
 To maintain data relevance and avoid skewed analysis, cities with fewer than 10 data entries have been removed. This ensures that only cities with a significant number of records are considered in the analysis.
 """)
-df_cleaned = df_cleaned[df_cleaned['City'].isin(city_list)]
-st.write("City count :", df_cleaned['City'].nunique())
+
+st.write("City count (After):", df_cleaned['City'].nunique())
 
 
 
 
 
-
+col3, col4 = st.columns(2)
 ####################################### Dietary Refinement #####################
 
 
-st.subheader("Dietary Refinement")
+with col3:
+    st.subheader("Dietary Habits Refinement")
 
-if 'Dietary Habits' in df_cleaned.columns:
-    dietary_habits_counts = df_cleaned['Dietary Habits'].value_counts()
-    st.write(dietary_habits_counts)
+    if 'Dietary Habits' in df_cleaned.columns:
+        dietary_habits_counts = df_cleaned['Dietary Habits'].value_counts()
+        st.write(dietary_habits_counts)
+
+        # Explanation paragraph
+        st.write("""
+        In the 'Dietary Habits' column, the 'Others' category contains only a small amount of data. 
+        To maintain data consistency and focus on the major dietary habits, we have removed entries categorized as 'Others.'
+        """)
+
+        # Remove 'Others' category
+        df_cleaned = df_cleaned[df_cleaned['Dietary Habits'] != 'Others']
+
+    else:
+        st.write("The 'Dietary Habits' column does not exist in the dataset.")
+
+    #count of others in column dietary habits
+    others_count = df_cleaned[df_cleaned['Dietary Habits'] == 'Others'].shape[0]
+    st.write("Count of 'Others' category (After):", others_count)
+
+
+with col4:
+    ########################## Work Pressure Refinement ##############################
+
+    st.subheader("Work Pressure Refinement")
+
+    work_pressure_counts = df_cleaned['Work Pressure'].value_counts()
+    st.write(work_pressure_counts)
 
     # Explanation paragraph
     st.write("""
-    In the 'Dietary Habits' column, the 'Others' category contains only a small amount of data. 
-    To maintain data consistency and focus on the major dietary habits, we have removed entries categorized as 'Others.'
+    Because it has only 2 records of 2 & 5 , to focus on the more common work pressure levels We have only taken the 'Work Pressure' column's '0' category.
     """)
 
-    # Remove 'Others' category
-    df_cleaned = df_cleaned[df_cleaned['Dietary Habits'] != 'Others']
+    # Remove categories except 0
+    df_cleaned = df_cleaned[df_cleaned['Work Pressure'] == 0]
 
-else:
-    st.write("The 'Dietary Habits' column does not exist in the dataset.")
-
-
-#count of others in column dietary habits
-
-others_count = df_cleaned[df_cleaned['Dietary Habits'] == 'Others'].shape[0]
-st.write("Count of 'Others' category:", others_count)
+    # Display the updated work pressure count
+    st.write("Work Pressure count (After):", df_cleaned['Work Pressure'].count())
 
 
+col1, col2 = st.columns(2)
+####################### Job Satisfaction Refinement ##############################
+
+
+with col1:
+    st.subheader("Job Satisfaction Refinement")
+
+    job_satisfaction_counts = df_cleaned['Job Satisfaction'].value_counts()
+    st.write(job_satisfaction_counts)
+
+    # Explanation paragraph
+    st.write("""
+    The 'Job Satisfaction' column contains only a small amount of data for the '1' , '2' & '3' categories. To focus on the more common job satisfaction levels, we have removed those
+    """)
+
+    # Remove categories except 0
+    df_cleaned = df_cleaned[df_cleaned['Job Satisfaction'] == 0]
+
+    # Display the updated work pressure count
+    st.write("Job Satisfaction count (After):", df_cleaned['Job Satisfaction'].count())
 
 
 
-# ??????????????????????????????????????????????///////////////////////
 
+########################Academic Pressure Refinement ##############################
+with col2:
+    st.subheader("Academic Pressure Refinement")
+
+    academic_pressure_counts = df_cleaned['Academic Pressure'].value_counts()
+    st.write(academic_pressure_counts)
+
+    # Explanation paragraph
+    st.write("""
+    The 'Academic Pressure' column contains only a small amount of data for the '0' category. To focus on the more common academic pressure levels, we have removed the '0' category.
+    """)
+
+    #Remove Category 0
+    df_cleaned = df_cleaned[df_cleaned['Academic Pressure'] != 0]
+
+    # Display the updated work pressure count
+    st.write("Academic Pressure count (After):", df_cleaned['Academic Pressure'].count())
+
+
+
+###################### Study Satisfaction Refinement ##############################
+
+st.subheader("Study Satisfaction Refinement")
+
+study_satisfaction_counts = df_cleaned['Study Satisfaction'].value_counts()
+st.write(study_satisfaction_counts)
+
+# Explanation paragraph
+st.write("""
+The 'Study Satisfaction' column contains only a small amount of data for the '0' category. To focus on the more common study satisfaction levels, we have removed the '0' category.
+""")
+
+# Remove Category 0
+df_cleaned = df_cleaned[df_cleaned['Study Satisfaction'] != 0]
+
+# Display the updated work pressure count
+st.write("Study Satisfaction count (After):", df_cleaned['Study Satisfaction'].count())
+
+
+
+
+###################### Degree Refinement ##############################
+
+st.subheader("Degree Refinement")
+
+degree_counts = df_cleaned['Degree'].value_counts().reset_index()
+degree_counts.columns = ['Degree', 'Count']
+
+# Pivot the DataFrame to use Degree as columns and Count as the row
+degree_counts_pivot = degree_counts.set_index('Degree').T
+
+# Display the pivoted DataFrame
+st.write(degree_counts_pivot)
+
+# Explanation paragraph
+st.write("""
+The 'Degree' column contains only a small amount of data for the 'Others' category. To focus on the more common degree categories, we have removed the 'Others' category.
+""")
+
+# Remove 'Others' category
 df_cleaned = df_cleaned[df_cleaned['Degree'] != 'Others']
 
-
+# Display the updated degree 'Others' count
+others_count = df_cleaned[df_cleaned['Degree'] == 'Others'].shape[0]
+st.write("Count of 'Others' category (After):", others_count)
 
 
 
 
 
 ######################### handling categorical data ############################################################################
+st.header("Encoding Categorical Data")
 
+###################### Gender Encoding ############################
 
-#gender encoding
-
-st.subheader("Encoding")
-
+st.subheader("Gender Encoding")
 
 st.write(df_cleaned[['Gender']].head(2))
 
@@ -332,8 +422,10 @@ This conversion ensures that the gender data is in numerical format, making it e
 df_cleaned['Gender'] = df_cleaned['Gender'].map({'Male': 0, 'Female': 1})
 
 
+####################### Sleep Duration Encoding ############################
 
 
+st.subheader("Sleep Duration Encoding")
 st.write(df_cleaned[['Sleep Duration']].head())
 # Explanation
 st.write("""
@@ -358,6 +450,7 @@ df_cleaned['Sleep Duration'] = df_cleaned['Sleep Duration'].map(sleep_duration_m
 
 
 
+st.subheader("Suicidal Thoughts Encoding")
 st.write(df_cleaned[['Have you ever had suicidal thoughts ?']].head(2))
 
 # Explanation
@@ -365,9 +458,11 @@ st.write("""
 To standardize the **'Have you ever had suicidal thoughts ?'** column, we encode it as follows:
 - **No → 0**
 - **Yes → 1**
-
-This conversion ensures that the data is in numerical format for better analysis.
 """)
+
+####################### Family History of Mental Illness Encoding ############################
+
+st.subheader("Family History of Mental Illness Encoding")
 
 # Encode the column
 df_cleaned['Have you ever had suicidal thoughts ?'] = df_cleaned['Have you ever had suicidal thoughts ?'].map({'No': 0, 'Yes': 1})
@@ -379,40 +474,67 @@ st.write("""
 To standardize the **'Family History of Mental Illness'** column, we encode it as follows:
 - **No → 0**
 - **Yes → 1**
-
-This conversion ensures that the data is in numerical format for better analysis.
 """)
 
-
-# ????????????????????????????????????????///////////////////////city encode?????????????????///
-
-
-
-st.subheader("Encoding")
-
-# Explanation
-st.write("""
-To standardize the **City** column, we assign a unique numeric value to each city using Label Encoding.
-This allows us to handle categorical data efficiently.
-""")
-
-# Apply Label Encoding
-label_encoder = LabelEncoder()
-df_cleaned['City'] = label_encoder.fit_transform(df_cleaned['City'])
-
-# Display the encoded City column
-# st.write("Encoded Data Sample:")
-st.write(df_cleaned[['City']].head())
+col1, col2 = st.columns(2)
+############# City Encoding ############################
 
 
-# Encode the column
-df_cleaned['Family History of Mental Illness'] = df_cleaned['Family History of Mental Illness'].map({'No': 0, 'Yes': 1})
+with col1:
+    st.subheader("City Encoding")
 
-# Display the updated dataframe
-st.write("Encoded city:")
+    # Explanation
+    st.write("""
+    To standardize the **City** column, we assign a unique numeric value to each city using Label Encoding.
+    """)
+
+    # Apply Label Encoding
+    label_encoder = LabelEncoder()
+    df_cleaned['City'] = label_encoder.fit_transform(df_cleaned['City'])
+
+    # Get the mapping of labels to numbers
+    label_mapping = dict(zip(label_encoder.classes_, label_encoder.transform(label_encoder.classes_)))
+
+    # Convert the mapping to a DataFrame
+    label_mapping_df = pd.DataFrame(list(label_mapping.items()), columns=['City', 'Encoded Value'])
+
+    # Display the DataFrame as a table
+    st.write("Label Encoding Mapping for City:")
+    st.write(label_mapping_df)
 
 
-st.subheader("Encoding")
+with col2:
+    ######################Degree Encoding ############################
+
+    st.subheader("Degree Encoding")
+
+    # Explanation
+    st.write("""
+    To standardize the **Degree** column, we assign a unique numeric value to each category using Label Encoding.
+    """)
+    # Apply Label Encoding
+    label_encoder = LabelEncoder()
+    df_cleaned['Degree'] = label_encoder.fit_transform(df_cleaned['Degree'])
+
+    # Get the mapping of labels to numbers
+    label_mapping = dict(zip(label_encoder.classes_, label_encoder.transform(label_encoder.classes_)))
+
+    # Convert the mapping to a DataFrame
+    label_mapping_df = pd.DataFrame(list(label_mapping.items()), columns=['Degree', 'Encoded Value'])
+
+    # Display the DataFrame as a table
+    st.write("Label Encoding Mapping for Degree:")
+    st.write(label_mapping_df)
+
+
+
+
+####################################### Dietary Habits Encoding #####################
+
+
+
+
+st.subheader("Dietary Habits Encoding")
 
 # Explanation
 st.write("""
@@ -423,37 +545,12 @@ To standardize the **Dietary Habits** column, we assign a unique numeric value t
 label_encoder = LabelEncoder()
 df_cleaned['Dietary Habits'] = label_encoder.fit_transform(df_cleaned['Dietary Habits'])
 
-# Display the encoded column
-st.write("Encoded Dietary Habits")
-st.write(df_cleaned[['Dietary Habits']].head())
+# Get the mapping of labels to numbers
+label_mapping = dict(zip(label_encoder.classes_, label_encoder.transform(label_encoder.classes_)))
 
+# Convert the mapping to a DataFrame
+label_mapping_df = pd.DataFrame(list(label_mapping.items()), columns=['Dietary Habits', 'Encoded Value'])
 
-
-st.subheader("Encoding - Degree")
-
-# Explanation
-st.write("""
-To standardize the **Degree** column, we assign a unique numeric value to each category using Label Encoding.
-""")
-
-# Apply Label Encoding
-label_encoder = LabelEncoder()
-df_cleaned['Degree'] = label_encoder.fit_transform(df_cleaned['Degree'])
-
-# Display the encoded column
-st.write("Encoded Data Sample:")
-st.write(df_cleaned[['Degree']].head())
-
-
-# Remove the ID column if it exists
-if 'id' in df_cleaned.columns:
-    df_cleaned.drop(columns=['id'], inplace=True)
-
-
-
-# Display the first 10 rows
-st.write(df_cleaned.head(10))
-
-
-
-
+# Display the DataFrame as a table
+st.write("Label Encoding Mapping for Dietary Habits:")
+st.write(label_mapping_df)
