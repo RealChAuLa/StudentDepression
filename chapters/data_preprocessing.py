@@ -163,9 +163,6 @@ st.write("Count of 'Others' category:", others_count)
 
 ####################################### Profession Refinement #####################
 
-
-
-
 st.subheader("Profession Refinement")
 profession_counts = df_cleaned['Profession'].value_counts().reset_index()
 profession_counts.columns = ['Profession', 'Count']
@@ -209,16 +206,16 @@ df_cleaned = df_cleaned[df_cleaned['Profession'] == 'Student']
 
 st.write("Profession count after filtering:", df_cleaned['Profession'].value_counts().values[0])
 
-# Drop the 'Profession' column as it's no longer needed
-df_cleaned.drop(columns=['Profession'], inplace=True)
+# # Drop the 'Profession' column as it's no longer needed
+# df_cleaned.drop(columns=['Profession'], inplace=True)
 
-# Display message with emphasis
-st.markdown("""
-    <div style="background-color:#ffcccb; padding:10px; border-radius:5px;">
-        <b style="color:#b30000;">The 'Profession' column has been removed
-        since only 'Student' remains as the profession.</b> 
-    </div>
-""", unsafe_allow_html=True)
+# # Display message with emphasis
+# st.markdown("""
+#     <div style="background-color:#ffcccb; padding:10px; border-radius:5px;">
+#         <b style="color:#b30000;">The 'Profession' column has been removed
+#         since only 'Student' remains as the profession.</b> 
+#     </div>
+# """, unsafe_allow_html=True)
 
 
 
