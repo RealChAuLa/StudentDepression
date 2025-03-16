@@ -1,4 +1,3 @@
-import time
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -127,61 +126,50 @@ with col2:
 
 
 
-
-
 #################### AGE DISTRIBUTION ####################
 
 
 
 
 
+st.subheader("Age Distribution")
 
-# Calculate age distribution
-age_counts = df['Age'].value_counts().sort_index()
-age_distribution = pd.DataFrame({
-    'Age': age_counts.index,
-    'Count': age_counts.values
-})
+age_counts = df['Age'].value_counts().reset_index()
+age_counts.columns = ['Age', 'Count']
 
-# Set up the sidebar elements
-progress_bar = st.sidebar.progress(0)
-status_text = st.sidebar.empty()
+# Sort by age to ensure correct order
+age_counts = age_counts.sort_values('Age')
 
-# Title for the chart
-st.subheader("Age Distribution Chart")
+# Create bar chart using plotly express
+fig = px.bar(
+    age_counts,
+    x='Age',
+    y='Count',
+    #title='Age Distribution',
+    labels={'Age': 'Age', 'Count': 'Number of Records'},
+    text='Count',  # Display count on bars
+    color='Age',
+    color_continuous_scale='RdBu'  # Red to Blue color scale
+)
 
-# Create the initial empty chart
-chart = st.bar_chart()
+# Customize the chart
+fig.update_traces(
+    textposition='outside',
+    texttemplate='%{text}',
+    marker_line_width=1,
+    marker_line_color='white'
+)
 
-# Prepare data for animation
-steps = 20  # Number of animation steps
-max_count = age_distribution['Count'].max()
+fig.update_layout(
+    xaxis_title='Age',
+    yaxis_title='Count',
+    coloraxis_showscale=False  # Hide the color scale
+)
 
-# Start with empty data frame
-display_data = pd.DataFrame(index=age_distribution['Age'])
+# Display the chart in Streamlit
+st.plotly_chart(fig, use_container_width=True)
 
-# Animate the chart building
-for i in range(1, steps + 1):
-    # Calculate the proportion of counts to show in this step
-    proportion = i / steps
 
-    # Create new data with partial counts
-    new_data = age_distribution.copy()
-    new_data['Count'] = age_distribution['Count'] * proportion
-
-    # Update chart
-    chart.add_rows(new_data.set_index('Age'))
-
-    # Update progress
-    status_text.text(f"Building age distribution: {int(proportion * 100)}% complete")
-    progress_bar.progress(i / steps)
-
-    # Short pause for animation effect
-    time.sleep(0.1)
-
-# Clear the progress elements
-progress_bar.empty()
-status_text.text("Age distribution complete!")
 
 
 
