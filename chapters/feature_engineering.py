@@ -127,4 +127,7 @@ else:
 st.write("### Preview of the Feature Engineered Data:")
 st.write(df_preprocessed.head(5))
 
+#Export Feature Engineered Data
+df_preprocessed.to_csv("data/FeatureEngineeredData.csv", index=False)
+
 
