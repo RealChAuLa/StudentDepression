@@ -450,6 +450,11 @@ df_cleaned['Sleep Duration'] = df_cleaned['Sleep Duration'].map(sleep_duration_m
 
 
 
+
+######################Suicidal Thoughts Encoding ############################
+
+
+
 st.subheader("Suicidal Thoughts Encoding")
 st.write(df_cleaned[['Have you ever had suicidal thoughts ?']].head(2))
 
@@ -460,21 +465,26 @@ To standardize the **'Have you ever had suicidal thoughts ?'** column, we encode
 - **Yes → 1**
 """)
 
-####################### Family History of Mental Illness Encoding ############################
-
-st.subheader("Family History of Mental Illness Encoding")
-
 # Encode the column
 df_cleaned['Have you ever had suicidal thoughts ?'] = df_cleaned['Have you ever had suicidal thoughts ?'].map({'No': 0, 'Yes': 1})
 
-# Display the updated dataframe
 
+
+####################### Family History of Mental Illness Encoding ############################
+
+
+st.subheader("Family History of Mental Illness Encoding")
+
+# Display the dataframe
 st.write(df_cleaned[['Family History of Mental Illness']].head(2))
 st.write("""
 To standardize the **'Family History of Mental Illness'** column, we encode it as follows:
 - **No → 0**
 - **Yes → 1**
 """)
+
+# Encode the column
+df_cleaned['Family History of Mental Illness'] = df_cleaned['Family History of Mental Illness'].map({'No': 0, 'Yes': 1})
 
 col1, col2 = st.columns(2)
 ############# City Encoding ############################
