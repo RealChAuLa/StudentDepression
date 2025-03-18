@@ -37,6 +37,13 @@ def run():
                 icon=":material/emoji_events:",
             ),
 
+            st.Page(
+    dir_path / "chapters/hyperparameter_tuning.py",
+    title="6. Hyperparameter Tuning",
+    icon=":material/tune:",
+)
+
+
         ]
     )
     page.run()
