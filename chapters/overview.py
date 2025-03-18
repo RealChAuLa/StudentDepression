@@ -9,7 +9,7 @@ def load_data():
 
 df = load_data()
 
-st.image("./assets/overview_banner.png", use_container_width=True)
+st.image("assets/overview_banner.png", use_container_width=True)
 
 # Introduction to the Project
 st.title("Introduction")
