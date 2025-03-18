@@ -9,7 +9,7 @@ from sklearn.preprocessing import LabelEncoder
 from chapters.overview import df
 
 st.set_page_config(layout="wide", initial_sidebar_state="collapsed")
-st.image("./assets/preprocessingBanner.jpg", use_container_width=True)
+st.image("assets/preprocessingBanner.jpg", use_container_width=True)
 st.title("Data Preprocessing")
 
 st.write(
