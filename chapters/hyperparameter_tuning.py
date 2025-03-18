@@ -14,7 +14,7 @@ from skopt import BayesSearchCV
 st.set_page_config(layout="wide", initial_sidebar_state="collapsed")
 
 # Display header image
-st.image("assets/hyperparameter-tuning.jpg", use_container_width=True)
+st.image("https://raw.githubusercontent.com/RealChAuLa/StudentDepression/master/assets/hyperparameter-tuning.jpg", use_container_width=True)
 
 # Page Title
 st.title("Hyperparameter Tuning")

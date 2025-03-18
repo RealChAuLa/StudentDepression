@@ -6,7 +6,7 @@ import plotly.express as px
 from sklearn.preprocessing import LabelEncoder
 
 st.set_page_config(layout="wide", initial_sidebar_state="collapsed")
-st.image("assets/preprocessingBanner.jpg", use_container_width=True)
+st.image("https://raw.githubusercontent.com/RealChAuLa/StudentDepression/master/assets/preprocessingBanner.jpg", use_container_width=True)
 
 @st.cache_data
 def load_data():

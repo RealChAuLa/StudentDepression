@@ -20,7 +20,7 @@ import time
 st.set_page_config(layout="wide", initial_sidebar_state="collapsed")
 
 # Display header image
-st.image("assets/ModelTraining.png", use_container_width=True)
+st.image("https://raw.githubusercontent.com/RealChAuLa/StudentDepression/master/assets/ModelTraining.png", use_container_width=True)
 
 # Page Title
 st.title("Model Selection and Training")

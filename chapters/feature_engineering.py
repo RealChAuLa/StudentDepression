@@ -7,7 +7,7 @@ df_preprocessed = pd.read_csv("data/PreprocessedData.csv")
 st.set_page_config(layout="wide", initial_sidebar_state="collapsed")
 
 # Display header image
-st.image("assets/feature_engineering.png", use_container_width=True)
+st.image("https://raw.githubusercontent.com/RealChAuLa/StudentDepression/master/assets/feature_engineering.png", use_container_width=True)
 
 # Page Title
 st.title("Feature Engineering")

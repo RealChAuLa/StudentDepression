@@ -8,7 +8,7 @@ import os
 st.set_page_config(layout="wide", initial_sidebar_state="collapsed")
 
 # Display header image
-st.image("assets/deployment_banner.jpg", use_container_width=True)
+st.image("https://raw.githubusercontent.com/RealChAuLa/StudentDepression/master/assets/deployment_banner.jpg", use_container_width=True)
 
 # Page Title
 st.title("Depression Prediction Tool")
