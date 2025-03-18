@@ -11,7 +11,7 @@ from chapters.model_selections_and_training import lr_model, X_test_scaled, Y_te
 st.set_page_config(layout="wide", initial_sidebar_state="collapsed")
 
 # Display header image
-st.image("assets/ModelTraining.png", use_container_width=True)
+st.image("assets/hyperparameter-tuning.jpg", use_container_width=True)
 
 # Page Title
 st.title("Hyperparameter Tuning")
