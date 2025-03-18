@@ -36,12 +36,18 @@ def run():
                 title="5. Model Selections and Training",
                 icon=":material/emoji_events:",
             ),
-
+            #Hyperparameter Tuning
             st.Page(
-    dir_path / "chapters/hyperparameter_tuning.py",
-    title="6. Hyperparameter Tuning",
-    icon=":material/tune:",
-)
+                dir_path / "chapters/hyperparameter_tuning.py",
+                title="6. Hyperparameter Tuning",
+                icon=":material/tune:",
+            ),
+            #deployment
+            st.Page(
+                dir_path / "chapters/deployment.py",
+                title="7. Deployment",
+                icon=":material/slow_motion_video:",
+            ),
 
 
         ]
