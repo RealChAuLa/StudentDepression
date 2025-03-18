@@ -6,10 +6,15 @@ import pydeck as pdk
 import requests
 import plotly.graph_objects as go
 
-from chapters.overview import df
-
 st.set_page_config(layout="wide", initial_sidebar_state="collapsed")
 st.image("assets/DataExploration.jpg", use_container_width=True)
+
+@st.cache_data
+def load_data():
+    df = pd.read_csv("./data/Student_Depression_Dataset.csv")  # Update with actual file path
+    return df
+
+df = load_data()
 
 st.title("Data Exploration")
 

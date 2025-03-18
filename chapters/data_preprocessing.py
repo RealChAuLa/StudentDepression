@@ -5,11 +5,16 @@ import altair as alt
 import plotly.express as px
 from sklearn.preprocessing import LabelEncoder
 
-
-from chapters.overview import df
-
 st.set_page_config(layout="wide", initial_sidebar_state="collapsed")
 st.image("assets/preprocessingBanner.jpg", use_container_width=True)
+
+@st.cache_data
+def load_data():
+    df = pd.read_csv("./data/Student_Depression_Dataset.csv")  # Update with actual file path
+    return df
+
+df = load_data()
+
 st.title("Data Preprocessing")
 
 st.write(
