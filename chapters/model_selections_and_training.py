@@ -1,3 +1,4 @@
+import joblib
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -61,6 +62,10 @@ def evaluate_model(model, X_train, X_test, Y_train, Y_test, model_name):
             fpr, tpr, roc_auc = None, None, None
     else:
         fpr, tpr, roc_auc = None, None, None
+
+    # Save the best model to a file
+    model_filename = f'models/{model_name}.pkl'
+    joblib.dump(model, model_filename)
 
     # Return all metrics
     return {
@@ -141,6 +146,8 @@ def display_results(results, model_name):
     report_df = pd.DataFrame(report).transpose()
     st.dataframe(report_df)
 
+    st.success(f"Model has been saved to ./models/{model_name}.pkl")
+
 
 # Sidebar for Algorithm Navigation
 st.sidebar.title("Training Algorithms")
@@ -196,14 +203,20 @@ with col2:
     st.write(f"Training Set: {X_train.shape[0]} samples")
     st.write(f"Test Set: {X_test.shape[0]} samples")
 
+
 # Feature scaling
+st.write("### Scaled Features")
+
 scaler = StandardScaler()
 X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)
 
-# Display scaled features
-st.write("### Scaled Features")
 st.dataframe(pd.DataFrame(X_train_scaled, columns=X.columns).head())
+
+# Save the scaler to a file
+scaler_filename = 'models/scaler.pkl'
+joblib.dump(scaler, scaler_filename)
+st.success(f"Scaler has been saved to {scaler_filename}")
 
 # Initialize dictionary to store model results
 all_results = {}
