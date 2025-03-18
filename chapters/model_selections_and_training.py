@@ -19,17 +19,17 @@ import time
 st.set_page_config(layout="wide", initial_sidebar_state="collapsed")
 
 # Display header image
-st.image("assets/ModelTraining.png", use_container_width=True)
+st.image("./assets/ModelTraining.png", use_container_width=True)
 
 # Page Title
 st.title("Model Selection and Training")
 
 
 # Function to evaluate model performance
-def evaluate_model(model, X_train, X_test, y_train, y_test, model_name):
+def evaluate_model(model, X_train, X_test, Y_train, Y_test, model_name):
     # Training time measurement
     start_time = time.time()
-    model.fit(X_train, y_train)
+    model.fit(X_train, Y_train)
     training_time = time.time() - start_time
 
     # Predictions
@@ -37,25 +37,25 @@ def evaluate_model(model, X_train, X_test, y_train, y_test, model_name):
     y_train_pred = model.predict(X_train)
 
     # Calculate metrics
-    accuracy = accuracy_score(y_test, y_pred)
-    precision = precision_score(y_test, y_pred, average='weighted')
-    recall = recall_score(y_test, y_pred, average='weighted')
-    f1 = f1_score(y_test, y_pred, average='weighted')
+    accuracy = accuracy_score(Y_test, y_pred)
+    precision = precision_score(Y_test, y_pred, average='weighted')
+    recall = recall_score(Y_test, y_pred, average='weighted')
+    f1 = f1_score(Y_test, y_pred, average='weighted')
 
     # Training metrics
-    train_accuracy = accuracy_score(y_train, y_train_pred)
+    train_accuracy = accuracy_score(Y_train, y_train_pred)
 
     # Calculate confusion matrix
-    cm = confusion_matrix(y_test, y_pred)
+    cm = confusion_matrix(Y_test, y_pred)
 
     # Cross-validation score
-    cv_scores = cross_val_score(model, X_train, y_train, cv=5, scoring='accuracy')
+    cv_scores = cross_val_score(model, X_train, Y_train, cv=5, scoring='accuracy')
 
     # ROC curve data (for binary classification)
-    if len(np.unique(y_test)) == 2 and hasattr(model, "predict_proba"):
+    if len(np.unique(Y_test)) == 2 and hasattr(model, "predict_proba"):
         try:
             y_prob = model.predict_proba(X_test)[:, 1]
-            fpr, tpr, _ = roc_curve(y_test, y_prob)
+            fpr, tpr, _ = roc_curve(Y_test, y_prob)
             roc_auc = auc(fpr, tpr)
         except:
             fpr, tpr, roc_auc = None, None, None
@@ -131,7 +131,7 @@ def display_results(results, model_name):
 
     # Classification report
     st.write("### Classification Report")
-    report = classification_report(y_test, results['model'].predict(X_test), output_dict=True)
+    report = classification_report(Y_test, results['model'].predict(X_test), output_dict=True)
     report_df = pd.DataFrame(report).transpose()
     st.dataframe(report_df)
 
@@ -150,7 +150,7 @@ for name, link in algorithm_links.items():
     st.sidebar.markdown(f"- [{name}]({link})")
 
 # Load preprocessed dataset
-df = pd.read_csv("data/FeatureEngineeredData.csv")
+df = pd.read_csv("./data/FeatureEngineeredData.csv")
 
 # Display dataset info
 st.write("### Dataset Information")
@@ -161,8 +161,8 @@ st.dataframe(df.head())
 
 
 col1, col2 = st.columns([1, 1])
-with col2:
-    # Data distribution
+# Target Variable distribution
+with col1:
     st.write("### Target Variable Distribution")
     # Create target distribution chart with Altair
     target_counts = df['Depression'].value_counts().reset_index()
@@ -170,7 +170,7 @@ with col2:
     target_chart = alt.Chart(target_counts).mark_bar().encode(
         x=alt.X('Depression:N', title='Depression Status (0: No, 1: Yes)'),
         y=alt.Y('Count:Q', title='Number of Records'),
-        color=alt.Color('Depression:N', scale=alt.Scale(scheme='blues')),
+        color=alt.Color('Depression:N', scale=alt.Scale(scheme='reds')),
         tooltip=['Depression', 'Count']
     ).properties(
         title='Distribution of Depression Classes',
@@ -180,13 +180,13 @@ with col2:
     st.altair_chart(target_chart, use_container_width=True)
 
     # Split data into features and target
+    Y = df['Depression']
     X = df.drop(columns=['Depression'])  # Adjust target column name if different
-    y = df['Depression']
 
-with col1:
-    # Train-Test Split
+# Train-Test Split
+with col2:
     st.write("### Dataset Splitting")
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, random_state=42)
     st.write(f"Training Set: {X_train.shape[0]} samples")
     st.write(f"Test Set: {X_test.shape[0]} samples")
 
@@ -194,6 +194,10 @@ with col1:
 scaler = StandardScaler()
 X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)
+
+# Display scaled features
+st.write("### Scaled Features")
+st.dataframe(pd.DataFrame(X_train_scaled, columns=X.columns).head())
 
 # Initialize dictionary to store model results
 all_results = {}
@@ -210,7 +214,7 @@ with st.expander("Logistic Regression Details"):
 
     # Training the model
     lr_model = LogisticRegression(random_state=42)
-    lr_results = evaluate_model(lr_model, X_train_scaled, X_test_scaled, y_train, y_test, "Logistic Regression")
+    lr_results = evaluate_model(lr_model, X_train_scaled, X_test_scaled, Y_train, Y_test, "Logistic Regression")
     all_results['Logistic Regression'] = lr_results
 
     # Display results
@@ -244,7 +248,7 @@ with st.expander("Decision Tree Details"):
 
     # Training the model
     dt_model = DecisionTreeClassifier(random_state=42)
-    dt_results = evaluate_model(dt_model, X_train, X_test, y_train, y_test, "Decision Tree")
+    dt_results = evaluate_model(dt_model, X_train, X_test, Y_train, Y_test, "Decision Tree")
     all_results['Decision Tree'] = dt_results
 
     # Display results
@@ -265,23 +269,6 @@ with st.expander("Decision Tree Details"):
                  title='Decision Tree Feature Importance')
     st.plotly_chart(fig)
 
-# Support Vector Machine (SVM)
-st.header("Support Vector Machine (SVM)", anchor="svm")
-st.write("A powerful classifier that finds the optimal hyperplane for class separation.")
-
-with st.expander("SVM Details"):
-    st.write("""
-    Support Vector Machine (SVM) is a supervised machine learning algorithm that can be used for both classification and regression tasks. 
-    It finds the optimal hyperplane that best separates the classes.
-    """)
-
-    # Training the model
-    svm_model = SVC(random_state=42, probability=True)
-    svm_results = evaluate_model(svm_model, X_train_scaled, X_test_scaled, y_train, y_test, "SVM")
-    all_results['SVM'] = svm_results
-
-    # Display results
-    display_results(svm_results, "Support Vector Machine")
 
 # k-Nearest Neighbors
 st.header("k-Nearest Neighbors (k-NN)", anchor="knn")
@@ -294,7 +281,7 @@ with st.expander("k-NN Details"):
 
     # Training the model
     knn_model = KNeighborsClassifier(n_neighbors=5)
-    knn_results = evaluate_model(knn_model, X_train_scaled, X_test_scaled, y_train, y_test, "k-NN")
+    knn_results = evaluate_model(knn_model, X_train_scaled, X_test_scaled, Y_train, Y_test, "k-NN")
     all_results['k-NN'] = knn_results
 
     # Display results
@@ -311,7 +298,7 @@ with st.expander("Random Forest Details"):
 
     # Training the model
     rf_model = RandomForestClassifier(random_state=42)
-    rf_results = evaluate_model(rf_model, X_train, X_test, y_train, y_test, "Random Forest")
+    rf_results = evaluate_model(rf_model, X_train, X_test, Y_train, Y_test, "Random Forest")
     all_results['Random Forest'] = rf_results
 
     # Display results
@@ -343,11 +330,32 @@ with st.expander("Neural Networks Details"):
 
     # Training the model
     mlp_model = MLPClassifier(random_state=42, max_iter=1000)
-    mlp_results = evaluate_model(mlp_model, X_train_scaled, X_test_scaled, y_train, y_test, "Neural Networks")
+    mlp_results = evaluate_model(mlp_model, X_train_scaled, X_test_scaled, Y_train, Y_test, "Neural Networks")
     all_results['Neural Networks'] = mlp_results
 
     # Display results
     display_results(mlp_results, "Neural Networks (MLP)")
+
+
+# Support Vector Machine (SVM)
+st.header("Support Vector Machine (SVM)", anchor="svm")
+st.write("A powerful classifier that finds the optimal hyperplane for class separation.")
+
+with st.expander("SVM Details"):
+    st.write("""
+    Support Vector Machine (SVM) is a supervised machine learning algorithm that can be used for both classification and regression tasks. 
+    It finds the optimal hyperplane that best separates the classes.
+    """)
+
+    # Training the model
+    svm_model = SVC(random_state=42, probability=True)
+    svm_results = evaluate_model(svm_model, X_train_scaled, X_test_scaled, Y_train, Y_test, "SVM")
+    all_results['SVM'] = svm_results
+
+    # Display results
+    display_results(svm_results, "Support Vector Machine")
+
+
 
 # Model Comparison
 st.header("Model Comparison")
