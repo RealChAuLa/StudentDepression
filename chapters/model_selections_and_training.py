@@ -19,7 +19,7 @@ import time
 st.set_page_config(layout="wide", initial_sidebar_state="collapsed")
 
 # Display header image
-st.image("./assets/ModelTraining.png", use_container_width=True)
+st.image("assets/ModelTraining.png", use_container_width=True)
 
 # Page Title
 st.title("Model Selection and Training")
@@ -49,7 +49,7 @@ def evaluate_model(model, X_train, X_test, Y_train, Y_test, model_name):
     cm = confusion_matrix(Y_test, y_pred)
 
     # Cross-validation score
-    cv_scores = cross_val_score(model, X_train, Y_train, cv=5, scoring='accuracy')
+    #cv_scores = cross_val_score(model, X_train, Y_train, cv=5, scoring='accuracy')
 
     # ROC curve data (for binary classification)
     if len(np.unique(Y_test)) == 2 and hasattr(model, "predict_proba"):
@@ -70,9 +70,9 @@ def evaluate_model(model, X_train, X_test, Y_train, Y_test, model_name):
         'recall': recall,
         'f1_score': f1,
         'confusion_matrix': cm,
-        'cv_scores': cv_scores,
-        'cv_mean': np.mean(cv_scores),
-        'cv_std': np.std(cv_scores),
+        #'cv_scores': cv_scores,
+        #'cv_mean': np.mean(cv_scores),
+        #'cv_std': np.std(cv_scores),
         'training_time': training_time,
         'train_accuracy': train_accuracy,
         'roc_data': (fpr, tpr, roc_auc) if fpr is not None else None
@@ -86,14 +86,20 @@ def display_results(results, model_name):
     with col1:
         st.write("### Performance Metrics")
         metrics_df = pd.DataFrame({
-            'Metric': ['Accuracy', 'Precision', 'Recall', 'F1 Score', 'Training Accuracy', 'CV Mean Accuracy'],
+            'Metric': ['Accuracy',
+                       'Precision',
+                       'Recall',
+                       'F1 Score',
+                       'Training Accuracy',
+                       #'CV Mean Accuracy'
+                       ],
             'Value': [
                 f"{results['accuracy']:.4f}",
                 f"{results['precision']:.4f}",
                 f"{results['recall']:.4f}",
                 f"{results['f1_score']:.4f}",
                 f"{results['train_accuracy']:.4f}",
-                f"{results['cv_mean']:.4f} ± {results['cv_std']:.4f}"
+                #f"{results['cv_mean']:.4f} ± {results['cv_std']:.4f}"
             ]
         })
         st.dataframe(metrics_df, hide_index=True)
@@ -348,7 +354,7 @@ with st.expander("SVM Details"):
     """)
 
     # Training the model
-    svm_model = SVC(random_state=42, probability=True)
+    svm_model = SVC()
     svm_results = evaluate_model(svm_model, X_train_scaled, X_test_scaled, Y_train, Y_test, "SVM")
     all_results['SVM'] = svm_results
 
