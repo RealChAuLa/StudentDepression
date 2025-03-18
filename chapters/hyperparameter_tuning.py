@@ -1,10 +1,11 @@
 import streamlit as st
 import numpy as np
 import pandas as pd
-from sklearn.model_selection import train_test_split, RandomizedSearchCV
-from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import RandomizedSearchCV
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 from sklearn.preprocessing import StandardScaler
+
+from chapters.model_selections_and_training import lr_model, X_test_scaled, Y_test, X_train_scaled, Y_train
 
 # Set Streamlit page layout
 st.set_page_config(layout="wide", initial_sidebar_state="collapsed")
@@ -16,40 +17,42 @@ st.image("assets/ModelTraining.png", use_container_width=True)
 st.title("Hyperparameter Tuning")
 
 # Load dataset
-df = pd.read_csv("data/FeatureEngineeredData.csv")
+#df = pd.read_csv("data/FeatureEngineeredData.csv")
 
 # Display data (optional)
-st.write(df.head())
+#st.write(df.head())
 
 # ///////////////////////////////////////////////////////////Prepare Data////////////////////////////
 
 # Select features (X) and target (y)
-X = df.drop('Depression', axis=1)  # Replace 'Depression' with your target column name if different
-y = df['Depression']  # Replace 'Depression' with your target column name if different
+#X = df.drop('Depression', axis=1)  # Replace 'Depression' with your target column name if different
+#Y = df['Depression']  # Replace 'Depression' with your target column name if different
 
 # Split data into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+#X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, random_state=42)
 
 # Standardize the features (important for logistic regression)
-scaler = StandardScaler()
-X_train = scaler.fit_transform(X_train)
-X_test = scaler.transform(X_test)
+#scaler = StandardScaler()
+#X_train_scaled = scaler.fit_transform(X_train)
+#X_test_scaled = scaler.transform(X_test)
 
 # ///////////////////////////////////////////////////////////Define and Train the Model////////////////////////////
 
 # Initialize the Logistic Regression model
-log_reg = LogisticRegression(max_iter=10000)
+#log_reg = LogisticRegression(random_state=42, max_iter=10000)
 
 # Train the model
-log_reg.fit(X_train, y_train)
-y_pred = log_reg.predict(X_test)
+#log_reg.fit(X_train_scaled, Y_train)
+#Y_pred = log_reg.predict(X_test)
+
+Y_pred = lr_model.predict(X_test_scaled)
 
 # Display performance metrics before tuning as a table
 metrics = {
-    "Accuracy": [accuracy_score(y_test, y_pred)],
-    "Precision": [precision_score(y_test, y_pred)],
-    "Recall": [recall_score(y_test, y_pred)],
-    "F1 Score": [f1_score(y_test, y_pred)]
+    "Accuracy": [accuracy_score(Y_test, Y_pred)],
+    "Precision": [precision_score(Y_test, Y_pred)],
+    "Recall": [recall_score(Y_test, Y_pred)],
+    "F1 Score": [f1_score(Y_test, Y_pred)]
 }
 
 # Convert metrics to a DataFrame and display it as a table
@@ -72,7 +75,7 @@ param_distributions = {
 
 # Set up RandomizedSearchCV
 random_search = RandomizedSearchCV(
-    estimator=log_reg, 
+    estimator=lr_model,
     param_distributions=param_distributions, 
     n_iter=20,  # Number of random combinations to try
     cv=5, 
@@ -82,13 +85,13 @@ random_search = RandomizedSearchCV(
 )
 
 # Fit RandomizedSearchCV to the training data
-random_search.fit(X_train, y_train)
+random_search.fit(X_train_scaled, Y_train)
 
 # Get the best model from the random search
 best_log_reg = random_search.best_estimator_
 
 # Predict using the tuned model
-y_pred_tuned = best_log_reg.predict(X_test)
+y_pred_tuned = best_log_reg.predict(X_test_scaled)
 
 # Display performance metrics after tuning
 st.subheader("Tuning Logistic Regression Model")
@@ -110,10 +113,10 @@ st.write("""
 
 # Metrics after tuning
 metrics_tuned = {
-    "Accuracy": [accuracy_score(y_test, y_pred_tuned)],
-    "Precision": [precision_score(y_test, y_pred_tuned)],
-    "Recall": [recall_score(y_test, y_pred_tuned)],
-    "F1 Score": [f1_score(y_test, y_pred_tuned)]
+    "Accuracy": [accuracy_score(Y_test, y_pred_tuned)],
+    "Precision": [precision_score(Y_test, y_pred_tuned)],
+    "Recall": [recall_score(Y_test, y_pred_tuned)],
+    "F1 Score": [f1_score(Y_test, y_pred_tuned)]
 }
 
 
