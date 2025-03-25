@@ -14,11 +14,9 @@
   - [Model Selections & Training](#model-selections--training)
   - [Hyperparameter Tuning](#hyperparameter-tuning)
   - [Model Deployment](#model-deployment)
-- [Model Performance](#model-performance)
 - [Technologies Used](#technologies-used)
 - [Future Improvements](#future-improvements)
 - [Contributors](#contributors)
-- [Acknowledgements](#acknowledgements)
 
 ## Overview
 This project aims to predict depression risk in students using machine learning techniques. By analyzing various academic, lifestyle, and personal factors, the system identifies students who may be at risk of depression, enabling timely intervention and support.
